@@ -1,0 +1,450 @@
+package aween;
+
+import java.io.FileInputStream;
+import java.util.ArrayList;
+import java.util.List;
+import java.util.Random;
+
+import javafx.animation.AnimationTimer;
+import javafx.application.Application;
+import javafx.event.ActionEvent;
+import javafx.event.EventHandler;
+import javafx.geometry.Insets;
+import javafx.geometry.Pos;
+import javafx.scene.Group;
+import javafx.scene.Scene;
+import javafx.scene.canvas.Canvas;
+import javafx.scene.canvas.GraphicsContext;
+import javafx.scene.control.Button;
+import javafx.scene.control.ColorPicker;
+import javafx.scene.control.Label;
+import javafx.scene.control.TextField;
+import javafx.scene.image.Image;
+import javafx.scene.image.ImageView;
+import javafx.scene.input.KeyCode;
+import javafx.scene.input.KeyEvent;
+import javafx.scene.layout.Background;
+import javafx.scene.layout.BackgroundImage;
+import javafx.scene.layout.GridPane;
+import javafx.scene.layout.HBox;
+import javafx.scene.layout.VBox;
+import javafx.scene.paint.Color;
+import javafx.scene.paint.Paint;
+import javafx.scene.text.Font;
+import javafx.scene.text.FontWeight;
+import javafx.scene.text.Text;
+import javafx.scene.text.TextAlignment;
+import javafx.stage.Stage;
+
+public class qwerty extends Application {
+
+	static Scene scene1,scene2,scene3;
+	static int start=0;
+	static Paint GameBcolor ;
+	static Paint SnakecolorIn ;
+	static Paint Snakecolorout ;
+
+	
+	//variables used in game
+	//variables
+		static int speed=5;
+		static int foodcolor =0;
+		static int width = 20;
+		static int hight =20;
+		static int foodX = 0;
+		static int foodY = 0;
+		static int cornersize = 25;
+		static List<Corner> snake = new ArrayList<>();
+		static Dir direction = Dir.up;
+		static boolean gameover = true;
+		static Random rand=new Random();
+		
+		static String pname="";
+		
+		public enum Dir{
+			left,right,up,down
+		}
+		
+		public static class Corner{
+			int x;
+		 	int y;
+			public Corner(int x,int y) {
+				this.x=x;
+				this.y=y;
+				
+			}
+			
+		}
+
+
+	@Override
+	public void start(Stage st) throws Exception {
+		//scene 1
+//		
+	     
+		st.setTitle("SNAKE GAME");
+		st.setWidth(500);
+		st.setHeight(500);
+	        GridPane grid = new GridPane();
+	        grid.setAlignment(Pos.CENTER);
+	       grid.setHgap(10);
+	        grid.setVgap(10);
+	        grid.setPadding(new Insets(25, 25, 25, 25));
+
+	       
+	       
+	    
+	      //image
+		
+	      FileInputStream input = new FileInputStream("C:\\Users\\iqbal\\eclipse-workspace\\aween\\images\\snake.png");
+	        Image image = new Image(input);
+	        ImageView imageView = new ImageView(image);
+	        imageView.setX(0);
+	        imageView.setY(0);
+	        imageView.setFitHeight(100);
+	        imageView.setFitWidth(250);
+	        HBox hbox = new HBox(imageView);
+//	        grid.add(imageView, 0, 0);
+	    	grid.getChildren().add(hbox);
+			
+			  
+			
+	        
+	        //title
+	        Text scenetitle = new Text("SNAKE GAME");
+	        scenetitle.setFont(Font.font("Arial", FontWeight.BOLD, 15));
+	        scenetitle.setStroke(Color.BLACK);
+	          scenetitle.setUnderline(true);
+	          scenetitle.setTextAlignment(TextAlignment.RIGHT);
+	          
+	      grid.add(scenetitle, 0, 1);
+    
+	      
+	      
+	      
+	        Label pName = new Label("Player Name :");
+	        grid.add(pName, 0, 2);
+	        TextField userTextField = new TextField();
+	        grid.add(userTextField, 1, 2);
+	        pname=userTextField.getText();
+	        
+	        
+	        Label Slable = new Label("Choose Snake Color:");
+	        grid.add(Slable, 0, 3);
+	       ColorPicker Scolor = new ColorPicker();
+	       grid.add(Scolor,1,3);
+	       
+	       
+	       Label Blable = new Label("Choose background Color:");
+	        grid.add(Blable, 0, 4);
+	       ColorPicker Bcolor = new ColorPicker();
+	       grid.add(Bcolor,1,4);
+	        
+	        Button b = new Button("Sign in");
+	        HBox hbBtn = new HBox(10);
+	       hbBtn.setAlignment(Pos.BOTTOM_RIGHT);
+	        hbBtn.getChildren().add(b);
+	        grid.add(hbBtn, 1, 5);
+		
+				b.setOnAction(new EventHandler<ActionEvent>()
+				{
+
+					@Override
+					public void handle(ActionEvent arg0) {
+						// TODO Auto-generated method stub
+						String details = " ";
+						
+						details += pName.getText() + " " ;
+						SnakecolorIn = Scolor.getValue();
+						GameBcolor = Bcolor.getValue();
+						System.out.println("Moved to game");
+						System.out.println("yahoo");
+						st.setScene(scene3);
+					}
+				});
+				
+				
+				 
+				VBox layout1= new VBox();
+				layout1.getChildren().addAll(grid);
+				
+				layout1.setMargin(b, new Insets(0, 0, 0, 180));
+				
+				
+				  
+				scene1 = new Scene(layout1,300,275);
+			
+			
+				st.setTitle("Welcome");
+				st.setScene(scene1);
+				st.show();
+				
+				
+				
+				
+				//Scene after player form and before game
+				Button btn=new Button("Click to play");
+				btn.setOnAction(new EventHandler<ActionEvent>() {
+
+					@Override
+					public void handle(ActionEvent event) {
+						// TODO Auto-generated method stub
+						st.setScene(scene2);
+						gameover = false;
+					}
+				});
+				
+				VBox layout3=new VBox();
+				layout3.getChildren().add(btn);
+				
+				scene3 = new Scene(layout3,width*cornersize,hight*cornersize);
+				
+
+//			st.setScene(scene3);
+//			st.show();
+				
+				
+				//aween scene 2
+//				Label label2= new Label("This is the second scene");
+//				Button button2= new Button("Go to scene 1");
+//				button2.setOnAction(e -> st.setScene(scene1));
+//				VBox layout2= new VBox(20);
+//				layout2.getChildren().addAll(label2, button2);
+//				scene2= new Scene(layout2,300,250);
+				        
+				        
+			
+				
+				
+				
+				
+			//Scene 2
+				try {
+					newfood();
+					
+					VBox root= new VBox();
+					Canvas c= new Canvas(width*cornersize , hight*cornersize);
+					GraphicsContext gc=c.getGraphicsContext2D();
+					root.getChildren().add(c);
+						
+
+			
+					new AnimationTimer(){ // 1 Mio tick = we get a new frame every 'speed' second = more frames = faster snake
+						long lastTick = 0;
+						public void handle(long now) {
+							if (lastTick == 0) {
+								lastTick = now;
+								tick(gc);
+								
+								return;
+							}
+							if (now - lastTick > 1000000000 / speed) {
+								lastTick = now;
+								tick(gc);
+							}
+						}
+					}.start();
+					
+
+					scene2 = new Scene(root,width*cornersize,hight*cornersize);
+					//control
+					//set the keyboard control tpo W A S D
+					
+					scene2.addEventFilter(KeyEvent.KEY_PRESSED, key ->{
+						
+						if(key.getCode() == KeyCode.W) {
+							direction=Dir.up;
+						}
+						
+						if(key.getCode() == KeyCode.A) {
+							direction=Dir.left;
+						}
+						
+						if(key.getCode() == KeyCode.S) {
+							direction=Dir.down;
+						}
+						
+						if(key.getCode() == KeyCode.D) {
+							direction=Dir.right;
+						}
+						
+					});
+					 
+				// Set the snake to 3 part(corners) at the begining
+					//add start snack part
+					//3part of snake in the begining
+					snake.add(new Corner (width/2,hight/2));
+					snake.add(new Corner (width/2,hight/2));
+					snake.add(new Corner (width/2,hight/2));
+					
+					scene2.getStylesheets().add(getClass().getResource("application.css").toExternalForm());
+				
+					st.setScene(scene2);
+					
+					st.setTitle("SNAKE GAME");
+					 
+					st.show();
+				} catch(Exception e) {
+					e.printStackTrace();
+				}
+			}
+			
+			
+			// tick
+			
+			public static void tick(GraphicsContext gc) {
+				if (gameover == true) {
+					gc.setFill(Color.RED);
+					gc.setFont(new Font("", 50));
+					gc.fillText("GAME OVER",100,250);
+					gc.setFill(Color.GREEN);
+					gc.fillText("Score :"+(speed-6), 150, 310);
+					gc.fillText("Snake size :"+snake.size(), 200, 360);
+					return;
+				}
+				//snake moving
+				for(int i=snake.size()-1;i>=1;i--) {
+					snake.get(i).x = snake.get(i-1).x;
+					snake.get(i).y = snake.get(i-1).y;
+				
+				}
+				
+				//game over if the snake touvch the border
+				switch(direction) {
+				case up:
+					snake.get(0).y--;
+					if(snake.get(0).y < 0) {
+						gameover=true;
+					}
+					
+					break;
+				case down:
+					
+					snake.get(0).y++;
+					if(snake.get(0).y >hight) {
+						gameover=true;
+					}
+					
+					
+					break; 
+				case left:
+					
+					snake.get(0).x--;
+					if(snake.get(0).x <0) {
+						gameover=true;
+					}
+					
+					break;
+				case right:
+					
+					snake.get(0).x++;
+					if(snake.get(0).x > width) {
+						gameover=true;
+					}
+					
+					break;
+					
+				}
+				
+				//eat food
+				if (foodX == snake.get(0).x && foodY == snake.get(0).y) {
+					snake.add(new Corner(-1,-1));
+					newfood();
+				}
+				//selfdestroy
+				// game over if the snack hit the snake
+				for (int i = 1; i < snake.size(); i++) {
+					if(snake.get(0).x ==  snake.get(i).x && snake.get(0).y ==  snake.get(i).y) {
+						gameover = true;
+					}
+				}
+				
+				// fill background
+				
+				gc.setFill(GameBcolor);
+				gc.fillRect(0, 0, width*cornersize, hight*cornersize);
+
+				
+				//fill the score in white with standard font position 10,3
+				//score
+				gc.setFill(Color.WHITE);
+				gc.setFont(new Font("",30));
+				gc.fillText("Score " +(speed-6),10,30);
+				
+				// set player name on screen;
+				gc.setFill(Color.WHITE);
+				gc.setFont(new Font("",15));
+				gc.fillText("Player Name # ", 300,30);
+				
+				gc.setFill(Color.RED);
+				gc.setFont(new Font("",20));
+				gc.fillText("pname", 300,50);
+				
+				//random food color
+				Color cc=Color.WHITE;
+				
+				switch(foodcolor) {
+				case 
+					0 : cc=Color.ORANGE;
+					break;
+				case 1 :
+					cc=Color.PINK;
+					break;
+				case 2 :
+					cc=Color.YELLOW;
+					break;
+				case 3 : 
+					cc=Color.LIGHTBLUE;
+					break;
+				case 4 : 
+					cc=Color.PURPLE;
+					break;
+				}
+				
+				gc.setFill(cc);
+				
+				//food shape
+				gc.fillRect(foodX * cornersize, foodY * cornersize, 15, 15);
+				
+				
+				//snack
+				//paint the snake in 2 colors and sizes.Lightgreen as shadow and green as foreground
+				for (Corner C : snake) {
+					gc.setFill(Color.DARKSLATEGRAY);
+					gc.fillRect(C.x*cornersize, C.y * cornersize, 28, 28);
+					gc.setFill(Color.LIGHTGRAY);
+					gc.fillRect(C.x*cornersize+3, C.y*cornersize+3, cornersize-3, cornersize-3);
+					gc.setFill(SnakecolorIn);
+					gc.fillRect(C.x*cornersize+12, C.y*cornersize+12 ,5, 5);
+				}
+			}
+			
+			//food
+			public static void newfood() { // we place a neww food on random location foodX * foodY on the canvas (if there is no snake) 
+				start: while(true) {
+					foodX=rand.nextInt(width);
+					foodY=rand.nextInt(hight);
+					 
+					for(Corner c:snake) {
+						if(c.x == foodX && c.y == foodY) {
+							continue start;
+						}
+						
+						
+						
+					}
+					
+					//choose a new color and increase speed
+					foodcolor = rand.nextInt(5);
+					speed++;
+					break;
+				}
+				
+}
+			
+			public static void main(String[] args) {
+				// TODO Auto-generated method stub
+		launch(args);
+			}
+}
+
